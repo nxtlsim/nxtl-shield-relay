@@ -1,0 +1,26 @@
+name = "nxtl-shield-relay"
+main = "src/index.ts"
+compatibility_date = "2025-10-11"
+account_id = "77e349cda8877baaa9c570282addef63"
+workers_dev = true
+preview_urls = false
+logpush = false
+
+[observability]
+enabled = false
+
+[observability.logs]
+enabled = false
+invocation_logs = false
+
+[[durable_objects.bindings]]
+name = "MESSAGES"
+class_name = "MessageDO"
+
+[[durable_objects.bindings]]
+name = "RATE_LIMIT"
+class_name = "RateLimitDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MessageDO", "RateLimitDO"]

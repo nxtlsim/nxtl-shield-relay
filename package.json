@@ -1,0 +1,24 @@
+{
+  "name": "nxtl-shield-relay",
+  "version": "1.0.0",
+  "private": false,
+  "license": "GPL-3.0-only",
+  "description": "Open-source server for NXTL Shield private links. Stores only encrypted text and deletes it after it is read.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "typecheck": "wrangler types && tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.6.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0",
+    "wrangler": "^4.159.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261109.1": true
+  }
+}

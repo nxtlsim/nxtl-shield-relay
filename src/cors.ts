@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
+const EXACT = new Set([
+  "https://nxtlsim.github.io",
+  "https://nxtl-esim-nxtl-shield.static.hf.space",
+  "https://huggingface.co",
+]);
+
+const LOCAL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+export function allowedOrigin(origin: string | null): string | null {
+  if (!origin) return null;
+  if (EXACT.has(origin) || LOCAL.test(origin)) return origin;
+  return null;
+}
+
+export function isAllowedOrigin(origin: string | null): boolean {
+  return allowedOrigin(origin) !== null;
+}
+
+export function corsHeaders(origin: string | null): Record<string, string> {
+  const allowed = allowedOrigin(origin);
+  if (!allowed) return {};
+  return {
+    "Access-Control-Allow-Origin": allowed,
+    Vary: "Origin",
+  };
+}
