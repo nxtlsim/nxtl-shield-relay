@@ -5,6 +5,7 @@ const EXACT = new Set([
   "https://nxtl-esim-nxtl-shield.static.hf.space",
   "https://huggingface.co",
   "chrome-extension://aihdikogmaekjmanjhdmeanhhfhiblmm",
+  "chrome-extension://gkppgaicgplgiegackgnehjejdfghokb",
 ]);
 
 const LOCAL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
