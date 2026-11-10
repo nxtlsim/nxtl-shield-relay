@@ -163,6 +163,56 @@ describe("nxtl-shield-relay", () => {
     expect(res.headers.get("Access-Control-Allow-Origin")).toBe("http://localhost:5173");
   });
 
+  it("allows the stable Chrome extension origin and a Firefox extension UUID", async () => {
+    const chromeOrigin = "chrome-extension://aihdikogmaekjmanjhdmeanhhfhiblmm";
+    const chromePreflight = await exports.default.fetch("https://relay.test/v1/messages", {
+      method: "OPTIONS",
+      headers: {
+        Origin: chromeOrigin,
+        "Access-Control-Request-Method": "POST",
+      },
+    });
+    expect(chromePreflight.status).toBe(204);
+    expect(chromePreflight.headers.get("Access-Control-Allow-Origin")).toBe(chromeOrigin);
+
+    const created = await create(CIPHER, 3600, uniqueIp("ext-chrome"), chromeOrigin);
+    expect(created.status).toBe(201);
+    expect(created.headers.get("Access-Control-Allow-Origin")).toBe(chromeOrigin);
+
+    const firefoxOrigin = "moz-extension://123e4567-e89b-12d3-a456-426614174000";
+    const firefoxPreflight = await exports.default.fetch("https://relay.test/v1/messages", {
+      method: "OPTIONS",
+      headers: {
+        Origin: firefoxOrigin,
+        "Access-Control-Request-Method": "POST",
+      },
+    });
+    expect(firefoxPreflight.status).toBe(204);
+    expect(firefoxPreflight.headers.get("Access-Control-Allow-Origin")).toBe(firefoxOrigin);
+  });
+
+  it("rejects other Chrome extension IDs and a malformed Firefox origin", async () => {
+    const otherChrome = await exports.default.fetch("https://relay.test/v1/messages", {
+      method: "OPTIONS",
+      headers: {
+        Origin: "chrome-extension://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "Access-Control-Request-Method": "POST",
+      },
+    });
+    expect(otherChrome.status).toBe(403);
+    expect(otherChrome.headers.get("Access-Control-Allow-Origin")).toBeNull();
+
+    const badFirefox = await exports.default.fetch("https://relay.test/v1/messages", {
+      method: "OPTIONS",
+      headers: {
+        Origin: "moz-extension://not-a-uuid",
+        "Access-Control-Request-Method": "POST",
+      },
+    });
+    expect(badFirefox.status).toBe(403);
+    expect(badFirefox.headers.get("Access-Control-Allow-Origin")).toBeNull();
+  });
+
   it("rejects ciphertext over the size limit", async () => {
     const huge = "A".repeat(64 * 1024 + 1);
     const res = await create(huge, 3600, uniqueIp("size"));
